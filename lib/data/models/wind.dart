@@ -4,7 +4,7 @@ part 'wind.freezed.dart';
 part 'wind.g.dart';
 
 @freezed
-class Wind with _$Wind{
+class Wind with _$Wind {
   const factory Wind(
     double? speed,
     int? deg,

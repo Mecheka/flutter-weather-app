@@ -5,7 +5,6 @@ part 'sys.g.dart';
 
 @freezed
 class Sys with _$Sys {
-
   const factory Sys(
     int? type,
     int? id,

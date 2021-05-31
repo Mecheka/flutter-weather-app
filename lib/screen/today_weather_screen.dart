@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/cubit/today_weather/today_weather_culit.dart';
+import 'package:weather_app/cubit/today_weather/today_weather_cubit.dart';
 import 'package:weather_app/cubit/today_weather/today_weather_state.dart';
 import 'package:weather_app/cubit/weather_permistion/weather_permission_cubit.dart';
 import 'package:weather_app/cubit/weather_permistion/weather_permission_state.dart';
@@ -16,10 +16,23 @@ class TodayWeatherScreen extends StatefulWidget {
 }
 
 class _TodayWeatherScreenState extends State<TodayWeatherScreen> {
+  WeatherPermissionCubit? permissionCubit;
+  TodayWeatherCulit? todayWeatherCulit;
+
   @override
   void initState() {
     super.initState();
+
+    permissionCubit = context.read<WeatherPermissionCubit>();
+    todayWeatherCulit = context.read<TodayWeatherCulit>();
     _getWeatherByLocation();
+  }
+
+  @override
+  void dispose() {
+    permissionCubit?.close();
+    todayWeatherCulit?.close();
+    super.dispose();
   }
 
   @override
@@ -165,7 +178,6 @@ class _TodayWeatherScreenState extends State<TodayWeatherScreen> {
   }
 
   _getWeatherByLocation() async {
-    final bloc = context.read<WeatherPermissionCubit>();
     bool serviceIsEnable;
     LocationPermission permission;
     Location location = Location();
@@ -183,21 +195,20 @@ class _TodayWeatherScreenState extends State<TodayWeatherScreen> {
       permission = await Geolocator.requestPermission();
 
       if (permission == LocationPermission.denied) {
-        bloc.changePermissionState(Denied());
+        permissionCubit?.changePermissionState(Denied());
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      bloc.changePermissionState(DeniedForever());
+      permissionCubit?.changePermissionState(DeniedForever());
       return;
     }
 
-    bloc.changePermissionState(Granted());
+    permissionCubit?.changePermissionState(Granted());
 
     final currentLocation = await location.getLocation();
-    context
-        .read<TodayWeatherCulit>()
-        .getTodayWeather(currentLocation.latitude, currentLocation.longitude);
+    todayWeatherCulit?.getTodayWeather(
+        currentLocation.latitude, currentLocation.longitude);
   }
 }
