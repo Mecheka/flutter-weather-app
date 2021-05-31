@@ -1,10 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/cubit/today_weather/today_weather_culit.dart';
+import 'package:weather_app/cubit/five_day_weather/five_day_weather_cubit.dart';
+import 'package:weather_app/cubit/today_weather/today_weather_cubit.dart';
 import 'package:weather_app/cubit/weather_permistion/weather_permission_cubit.dart';
 import 'package:weather_app/data/service/dio_client.dart';
-import 'package:weather_app/data/weather_repository_impl.dart';
+import 'package:weather_app/cubit/weather_repository_impl.dart';
 import 'package:weather_app/screen/city_weather_screen.dart';
 import 'package:weather_app/screen/five_day_weather_screen.dart';
 import 'package:weather_app/screen/today_weather_screen.dart';
@@ -34,6 +34,10 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) =>
                 TodayWeatherCulit(context.read<WeatherRepositoryImpl>()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                FiveDayWeatherCubit(context.read<WeatherRepositoryImpl>()),
           )
         ],
         child: MaterialApp(
